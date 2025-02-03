@@ -1,5 +1,5 @@
 <div align="center" style="margin-bottom: 59px;">
-    This repository houses the <b>backend code</b> for iMemoraise, the Integrated Quran Memorization Information System.
+    This repository houses the <b>backend code</b> for Setoran Hafalan Services, the Integrated Quran Memorization Information System.
     </br>
     🔥 Designed to streamline the recitation submission process, particularly for UIN Suska Riau. 🔥
 </div>
@@ -11,7 +11,7 @@
 </div>
 
 <p align="center">
-  iMemoraise: Integrated Quran Memorization Information System UIN Suska Riau
+  Setoran Hafalan Services (new ver of iMemoraise): Integrated Quran Memorization Information System UIN Suska Riau
   </br> 
   <i>(build with 💚💜 using: Express TS + Prisma-ORM + Bun + PostgreSQL)</i>
 </p>
@@ -41,9 +41,10 @@
 
 [underconstruction]: https://img.shields.io/badge/Status-WIP-FFFF00?style=for-the-badge&logoColor=FFFF00
 
-## ✨ What’s the deal with iMemoraise? ✨ // ✧˚ ༘ ⋆｡♡˚ ![underconstruction][underconstruction]
+## ✨ What’s the deal with Setoran Hafalan Services? ✨ // ✧˚ ༘ ⋆｡♡˚ ![underconstruction][underconstruction]
 
-**iMemoraise** _(Integrated Quran Memorization Information System)_ is a comprehensive web application created to enhance the management and tracking of Quran recitations. This system is specifically designed to support educational institutions in overseeing and recording students' recitations, **which are mandatory for progressing to internships, seminars, final projects, and other academic activities.** By providing a streamlined platform for tracking these essential recitations, iMemoraise simplifies the administrative process, ensuring that all requirements are met efficiently. This application is particularly tailored for use at [UIN Suska Riau](https://www.uin-suska.ac.id/), _where it aids in managing students' academic progress and compliance_ with Quran memorization prerequisites.
+**Setoran Hafalan Services - 
+or what we previously knew as iMemoraise** _(Integrated Quran Memorization Information System)_ is a comprehensive web application created to enhance the management and tracking of Quran recitations. This system is specifically designed to support educational institutions in overseeing and recording students' recitations, **which are mandatory for progressing to internships, seminars, final projects, and other academic activities.** By providing a streamlined platform for tracking these essential recitations, Setoran Hafalan Services simplifies the administrative process, ensuring that all requirements are met efficiently. This application is particularly tailored for use at [UIN Suska Riau](https://www.uin-suska.ac.id/), _where it aids in managing students' academic progress and compliance_ with Quran memorization prerequisites.
 
 ---
 
@@ -68,9 +69,9 @@ Ensure you have the following prerequisites installed on your development machin
 
 ---
 
-## 🚀 Key Features of iMemoraise
+## 🚀 Key Features of Setoran Hafalan Services
 
-iMemoraise is designed to enhance the management and tracking of Quran recitations for Academic Advisors and students. Here are the main features provided:
+Setoran Hafalan Services is designed to enhance the management and tracking of Quran recitations for Academic Advisors and students. Here are the main features provided:
 
 **For Academic Advisors:**
 
@@ -83,7 +84,7 @@ iMemoraise is designed to enhance the management and tracking of Quran recitatio
 
 ## 👣 Usage Scenario
 
-iMemoraise uses Keycloak for identity and access management. Keycloak handles authentication and authorization, providing secure access through its OAuth2 and OpenID Connect protocols.
+Setoran Hafalan Services uses Keycloak for identity and access management. Keycloak handles authentication and authorization, providing secure access through its OAuth2 and OpenID Connect protocols.
 
 **Here’s a simple scenario for logging in as an Academic Advisor or student:**
 
@@ -94,7 +95,7 @@ iMemoraise uses Keycloak for identity and access management. Keycloak handles au
 
 ## 🤝 Contributing
 
-Contributions are crucial for improving iMemoraise. We welcome and value any help or suggestions.
+Contributions are crucial for improving Setoran Hafalan Services. We welcome and value any help or suggestions.
 
 To contribute, fork the repository, create a pull request, or open a new issue to discuss potential enhancements. Don’t forget to star the repository if you find it helpful! Thank you for your support!
 
