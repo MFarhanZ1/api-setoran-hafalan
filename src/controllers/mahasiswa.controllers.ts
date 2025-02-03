@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { MahasiswaService } from "../services/mahasiswa.services";
+import { MahasiswaService } from "../services/mahasiswa.services.js";
 
 class MahasiswaController {
   public static async getInfoMahasiswaByEmail (req: Request, res: Response) {

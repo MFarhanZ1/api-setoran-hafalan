@@ -46,7 +46,7 @@ async function main() {
         ]
     });
 
-    console.log("[INFO] Data seeding is totally completed. ✨");
+    console.log("[INFO] Data seeding is totally completed! ✨");
 }
 
 main()

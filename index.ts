@@ -9,15 +9,24 @@ const port = 5000;
 app.use(cors());
 app.use(express.json());
 
+app.get('/', (req, res) => {
+  return res.status(200).json({
+    'response': true,
+    'message': 'Cihuy, Halow Semua 👋 ~ Selamat datang di API Setoran Hafalan! 🎉',
+    'version': 'v1.1.4-alpha',
+    'contributor': 'https://github.com/riaudevops/api-setoran-hafalan/graphs/contributors',
+    'timezone': 'Asia/Jakarta ~ ' + new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })
+  })
+})
 app.use(dosenRoutes);
 app.use(mahasiswaRoutes);
 app.use((req, res) => {
-  res.status(404).json({
+  return res.status(404).json({
     'response': false,
     'message': 'Waduh, mau nyari apa kamu mas? 😅',
   });
 });
 
 app.listen(port, () => {
-  console.log(`[INFO] Server is on fire at port ${port}. 🔥`);
+  console.log(`[INFO] Server is on fire at port ${port}! 🔥`);
 });

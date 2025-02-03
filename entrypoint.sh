@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Show message to the cli
+echo "[INFO] Sabar yak mas, server sedang dalam proses di-jalankan! 🚀"
+
 # Generate Prisma Client
 npx prisma generate
 
