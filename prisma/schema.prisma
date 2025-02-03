@@ -7,20 +7,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model akun {
-  email      String      @id(map: "pk_email_akun") @db.VarChar(255)
-  nama       String      @db.VarChar(255)
-  created_at DateTime    @default(now()) @db.Timestamp(6)
-  updated_at DateTime    @default(now()) @db.Timestamp(6)
-  dosen      dosen[]
-  mahasiswa  mahasiswa[]
-}
-
 model dosen {
   nip       String      @id(map: "pk_nip_dosen") @db.VarChar(18)
   nama      String      @db.VarChar(255)
-  email     String      @db.VarChar(255)
-  akun      akun        @relation(fields: [email], references: [email], onDelete: NoAction, onUpdate: NoAction, map: "fk_email_dosen")
+  email     String      @unique @db.VarChar(255)
   mahasiswa mahasiswa[]
   setoran   setoran[]
 }
@@ -28,9 +18,8 @@ model dosen {
 model mahasiswa {
   nim     String    @id(map: "pk_nim_mahasiswa") @db.VarChar(11)
   nama    String    @db.VarChar(255)
-  email   String    @db.VarChar(255)
+  email   String    @unique @db.VarChar(255)
   nip     String    @db.VarChar(18)
-  akun    akun      @relation(fields: [email], references: [email], onDelete: NoAction, onUpdate: NoAction, map: "fk_email_mahasiswa")
   dosen   dosen     @relation(fields: [nip], references: [nip], onDelete: NoAction, onUpdate: NoAction, map: "fk_nip_mahasiswa")
   setoran setoran[]
 }

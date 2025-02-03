@@ -3,20 +3,10 @@ CREATE TYPE "type_label_surah" AS ENUM ('KP', 'SEMKP', 'DAFTAR_TA', 'SEMPRO', 'S
 
 -- CreateTable
 CREATE TABLE
-    "akun" (
-        "email" VARCHAR(255) NOT NULL,
-        "nama" VARCHAR(255) NOT NULL,
-        "created_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        "updated_at" TIMESTAMP(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        CONSTRAINT "pk_email_akun" PRIMARY KEY ("email")
-    );
-
--- CreateTable
-CREATE TABLE
     "dosen" (
         "nip" VARCHAR(18) NOT NULL,
         "nama" VARCHAR(255) NOT NULL,
-        "email" VARCHAR(255) NOT NULL,
+        "email" VARCHAR(255) NOT NULL UNIQUE,
         CONSTRAINT "pk_nip_dosen" PRIMARY KEY ("nip")
     );
 
@@ -25,7 +15,7 @@ CREATE TABLE
     "mahasiswa" (
         "nim" VARCHAR(11) NOT NULL,
         "nama" VARCHAR(255) NOT NULL,
-        "email" VARCHAR(255) NOT NULL,
+        "email" VARCHAR(255) NOT NULL UNIQUE,
         "nip" VARCHAR(18) NOT NULL,
         CONSTRAINT "pk_nim_mahasiswa" PRIMARY KEY ("nim")
     );
@@ -50,12 +40,6 @@ CREATE TABLE
         "label" "type_label_surah",
         CONSTRAINT "pk_nomor_surah" PRIMARY KEY ("nomor")
     );
-
--- AddForeignKey
-ALTER TABLE "dosen" ADD CONSTRAINT "fk_email_dosen" FOREIGN KEY ("email") REFERENCES "akun" ("email") ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- AddForeignKey
-ALTER TABLE "mahasiswa" ADD CONSTRAINT "fk_email_mahasiswa" FOREIGN KEY ("email") REFERENCES "akun" ("email") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "mahasiswa" ADD CONSTRAINT "fk_nip_mahasiswa" FOREIGN KEY ("nip") REFERENCES "dosen" ("nip") ON DELETE NO ACTION ON UPDATE NO ACTION;
