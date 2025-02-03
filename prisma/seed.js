@@ -46,12 +46,12 @@ async function main() {
         ]
     });
 
-    console.log("Data seeding completed.");
+    console.log("[INFO] Data seeding is totally completed. ✨");
 }
 
 main()
     .catch(e => {
-        console.error(e);
+        console.error(`[ERROR] ${e.message}`);
     })
     .finally(async () => {
         await prisma.$disconnect();
