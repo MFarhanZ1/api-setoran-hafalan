@@ -1,188 +1,132 @@
 import { PrismaClient } from "@prisma/client";
-import {
-  getAllInfoSetoranByNip,
-  getInfoMahasiswaPAPerAngkatanByNIP,
-  IDGenerator,
-} from "../services/dosen.services.js";
 import { Request, Response } from "express";
+import { DosenService } from "../services/dosen.services.js";
+import { DosenHelper } from "../helpers/dosen.helpers.js";
 
 const prisma = new PrismaClient();
 
-const getInfoDosenByEmail = async (req: Request, res: Response) => {
-  const { email } = req.params;
+class DosenController {
+	public static async getInfoDosenByEmail(req: Request, res: Response) {
+		const { email } = req.params;
 
-  try {
-    // Mengambil data nama, dan nim mahasiswa berdasarkan email
-    const resultInfoPribadiDosen = await prisma.dosen.findFirst({
-      where: {
-        email: email,
-      },
-      select: {
-        nama: true,
-        nip: true,
-      },
-    });
+		try {
+			const resultInfoDosen = await DosenService.getInfoDosenByEmail(email);
+			const resultInfoMahasiswaPerAngkatan =
+				await DosenService.getInfoMahasiswaPAPerAngkatanByEmail(email);
+			const resultListMahasiswaPA = await DosenService.getMahasiswaPAByEmail(
+				email
+			);
 
-    const resultInfoMahasiswaPerAngkatan =
-      await getInfoMahasiswaPAPerAngkatanByNIP(resultInfoPribadiDosen!.nip);
+			if (!resultInfoDosen) {
+				return res.status(404).json({
+					response: false,
+					message: "Oops! data dosen tidak ditemukan. 😭",
+				});
+			}
 
-    const statsSetoran = await getAllInfoSetoranByNip(
-      resultInfoPribadiDosen!.nip
-    );
+			res.status(200).json({
+				response: true,
+				message:
+					"Berikut info dosen lengkap serta detail mahasiswa per angkatan (max 8 akt)! 😁",
+				data: {
+					nama: resultInfoDosen!.nama,
+					nip: resultInfoDosen!.nip,
+					info_mahasiswa_pa: {
+						ringkasan: resultInfoMahasiswaPerAngkatan,
+						daftar_mahasiswa: resultListMahasiswaPA,
+					},
+				},
+			});
+		} catch (error) {
+			console.error(`[ERROR] ${error}`);
+			res.status(500).json({
+				response: false,
+				message: "Oops! ada kesalahan di server kami. 😭",
+			});
+		}
+	}
 
-    res.status(200).json({
-      response: true,
-      message:
-        "Berikut info dosen lengkap serta info mahasiswa per angkatan (max 8 akt)!",
-      data: {
-        nama: resultInfoPribadiDosen!.nama,
-        nip: resultInfoPribadiDosen!.nip,
-        info: resultInfoMahasiswaPerAngkatan,
-        stats: {
-          list_setoran_perhari: statsSetoran,
-        },
-      },
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      response: false,
-      message: "Internal server error!",
-    });
-  }
-};
+	public static async postSetoran(req: Request, res: Response) {
 
-const postSetoran = async (req: Request, res: Response) => {
-  const { nim, nip, nomor_surah, tgl_setoran } = req.body;
-
-  // Validasi input
-  if (!nim || !nip || !nomor_surah) {
-    return res.status(400).json({
-      response: false,
-      message: "Waduh, lengkapi dulu datanya mas!",
-    });
-  }
-
-  // Convert nomor_surah to integer if it is a string, and returns err if not
-  const nomorSurahInt = parseInt(nomor_surah as string, 10);
-  if (isNaN(nomorSurahInt)) {
-    return res.status(400).json({
-      response: false,
-      message: "Waduh, nomor surah-nya salah format mas!",
-    });
-  }
-
-  await prisma.$transaction(async (prisma) => {
-    try {
-      // Periksa apakah kombinasi nim, nip, dan nomor_surah sudah ada (antisipasi duplikasi setoran di 1 mhs)
-      const existingSetoran = await prisma.setoran.findFirst({
-        where: {
-          AND: [
-            { nim: nim as string },
-            { nip: nip as string },
-            { nomor_surah: nomorSurahInt },
-          ],
-        },
-      });
-      if (existingSetoran) {
-        return res.status(400).json({
-          response: false,
-          message: "Maaf, mahasiswa ybs telah menyetor surah tersebut!",
-        });
-      }
-
-      // Generate ID setoran baru, format SH240001 ++
-      const idSetoran = await IDGenerator.generateNewIdSetoran();
-
-      // Simpan data ke database mas
-      await prisma.setoran.create({
-        data: {
-          id: idSetoran,
-          tgl_setoran: tgl_setoran ? new Date(tgl_setoran) : new Date(),
-          tgl_validasi: new Date(),
-          nim: nim as string,
-          nip: nip as string,
-          nomor_surah: nomorSurahInt,
-        },
-      });
-
-      // Kirim respons sukses
-      res.status(201).json({
-        response: true,
-        message: "Yeay, proses validasi setoran berhasil! ✨",
-      });
-    } catch (error) {
-      res.status(500).json({
+		const { nim, email_dosen_pa, nomor_surah, tgl_setoran } = req.body;
+    
+    // Convert nomor_surah to integer if it is a string, and returns err if not
+    const nomorSurahInt = parseInt(nomor_surah as string, 10);
+    if (isNaN(nomorSurahInt)) {
+      return res.status(400).json({
         response: false,
-        message: "Oops! ada kesalahan di server kami 😭",
+        message: "Waduh, nomor surah-nya salah format mas! 😡",
       });
     }
-  });
-};
+    
+    // Validasi input
+		if (DosenHelper.validasiPostSetoran(nim, email_dosen_pa, nomorSurahInt )) {
+			return res.status(400).json({
+				response: false,
+				message: "Waduh, lengkapi dulu datanya mas! 😡",
+			});
+		}
 
-const deleteSetoranByID = async (req: Request, res: Response) => {
-  const { id_setoran } = req.params;
+		await prisma.$transaction(async () => {
+			try {
+				// Periksa apakah kombinasi nim, nip, dan nomor_surah sudah ada (antisipasi duplikasi setoran di 1 mhs)
+				const existingSetoran = await DosenService.checkExistingSetoran(nim as string, email_dosen_pa as string, nomorSurahInt);
+				if (existingSetoran) {
+					return res.status(400).json({
+						response: false,
+						message: "Maaf, mahasiswa ybs telah menyetor surah tersebut!",
+					});
+				}
 
-  // Validasi input
-  if (!id_setoran) {
-    return res.status(400).json({
-      response: false,
-      message: "Waduh, id setoran-nya kagak ada mas, apa yang mau diapus!",
-    });
-  }
+				// Simpan data ke database
+				await DosenService.postSetoran(nim as string, email_dosen_pa as string, nomorSurahInt as number, tgl_setoran as string);
 
-  try {
-    await prisma.setoran
-      .delete({
-        where: {
-          id: id_setoran,
-        },
-      })
-      .then(() => {
-        return res.status(200).json({
-          response: true,
-          message: "Yeay, data setoran berhasil di-batalkan! ✨",
-        });
-      });
-  } catch (error) {
-    return res.status(500).json({
-      response: false,
-      message: "Oops! ada kesalahan di server kami 😭",
-    });
-  }
-};
+				// Kirim respons sukses
+				res.status(201).json({
+					response: true,
+					message: "Yeay, proses validasi setoran berhasil! ✨",
+				});
+			} catch (error) {
+        console.error(`[ERROR] ${error}`);
+				res.status(500).json({
+					response: false,
+					message: "Oops! ada kesalahan di server kami 😭",
+				});
+			}
+		});
+	}
 
-const findMahasiswaByNameOrNim = async (req: Request, res: Response) => {
-  const { search, nip, angkatan } = req.query;
+	public static async deleteSetoranByID(req: Request, res: Response) {
+		const { id_setoran } = req.params;
 
-  try {
-    const result = await prisma.$queryRaw`
-			SELECT 
-				nim, nama
-			FROM 
-				mahasiswa 
-			WHERE 
-				CONCAT('20', SUBSTRING(nim, 2, 2)) = ${angkatan}
-				AND nip = ${nip}
-				AND (LOWER(nama) LIKE ${`%${search}%`} OR LOWER(nim) LIKE ${`%${search}%`});
-		`;
+		// Validasi input
+		if (!id_setoran) {
+			return res.status(400).json({
+				response: false,
+				message: "Waduh, id setoran-nya kagak ada mas, apa yang mau diapus!",
+			});
+		}
 
-    res.status(200).json({
-      response: true,
-      message: "Berikut list data mahasiswa yang sesuai!",
-      data: result,
-    });
-  } catch (error) {
-    res.status(500).json({
-      response: false,
-      message: "Oops! ada kesalahan di server kami 😭",
-    });
-  }
-};
+		try {
+			await prisma.setoran
+				.delete({
+					where: {
+						id: id_setoran,
+					},
+				})
+				.then(() => {
+					return res.status(200).json({
+						response: true,
+						message: "Yeay, data setoran berhasil di-batalkan! ✨",
+					});
+				});
+		} catch (error) {
+			return res.status(500).json({
+				response: false,
+				message: "Oops! ada kesalahan di server kami 😭",
+			});
+		}
+	}
+}
 
-export {
-  getInfoDosenByEmail,
-  findMahasiswaByNameOrNim,
-  postSetoran,
-  deleteSetoranByID,
-};
+export { DosenController };
