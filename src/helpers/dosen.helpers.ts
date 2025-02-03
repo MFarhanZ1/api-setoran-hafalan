@@ -12,8 +12,12 @@ class DosenHelper {
         return `${prefix}${currentYear}${randomChars}`;
     }
 
-    public static validasiPostSetoran(nim: string, email_dosen_pa: string, nomor_surah: number): boolean {
+    public static validatePostSetoran(nim: string, email_dosen_pa: string, nomor_surah: number): boolean {
         return (!nim || !email_dosen_pa || !nomor_surah);
+    }
+
+    public static validateDeleteSetoran(id_setoran: string): boolean {
+        return (!id_setoran);
     }
 }
 
