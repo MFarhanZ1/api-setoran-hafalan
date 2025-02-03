@@ -1,6 +1,5 @@
 import express from "express";
 import cors from "cors";
-import authRoutes from "./src/routes/auth.routes.js";
 import dosenRoutes from "./src/routes/dosen.routes.js";
 import mahasiswaRoutes from "./src/routes/mahasiswa.routes.js";
 
@@ -10,10 +9,15 @@ const port = 5000;
 app.use(cors());
 app.use(express.json());
 
-app.use(authRoutes);
 app.use(dosenRoutes);
 app.use(mahasiswaRoutes);
+app.use((req, res) => {
+  res.status(404).json({
+    'response': false,
+    'message': 'Waduh, mau nyari apa kamu mas? 😅',
+  });
+});
 
 app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  console.log(`[INFO] Server is on fire at port ${port}. 🔥`);
 });
