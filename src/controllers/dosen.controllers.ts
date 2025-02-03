@@ -47,20 +47,19 @@ class DosenController {
 	}
 
 	public static async postSetoran(req: Request, res: Response) {
-
 		const { nim, email_dosen_pa, nomor_surah, tgl_setoran } = req.body;
-    
-    // Convert nomor_surah to integer if it is a string, and returns err if not
-    const nomorSurahInt = parseInt(nomor_surah as string, 10);
-    if (isNaN(nomorSurahInt)) {
-      return res.status(400).json({
-        response: false,
-        message: "Waduh, nomor surah-nya salah format mas! 😡",
-      });
-    }
-    
-    // Validasi input
-		if (DosenHelper.validatePostSetoran(nim, email_dosen_pa, nomorSurahInt )) {
+
+		// Convert nomor_surah to integer if it is a string, and returns err if not
+		const nomorSurahInt = parseInt(nomor_surah as string, 10);
+		if (isNaN(nomorSurahInt)) {
+			return res.status(400).json({
+				response: false,
+				message: "Waduh, nomor surah-nya salah format mas! 😡",
+			});
+		}
+
+		// Validasi input
+		if (DosenHelper.validatePostSetoran(nim, email_dosen_pa, nomorSurahInt)) {
 			return res.status(400).json({
 				response: false,
 				message: "Waduh, lengkapi dulu datanya mas! 😡",
@@ -70,30 +69,40 @@ class DosenController {
 		await prisma.$transaction(async () => {
 			try {
 				// Periksa apakah kombinasi nim, nip, dan nomor_surah sudah ada (antisipasi duplikasi setoran di 1 mhs)
-				const existingSetoran = await DosenService.checkExistingSetoran(nim as string, email_dosen_pa as string, nomorSurahInt);
+				const existingSetoran = await DosenService.checkExistingSetoran(
+					nim as string,
+					email_dosen_pa as string,
+					nomorSurahInt
+				);
 				if (existingSetoran) {
 					return res.status(400).json({
 						response: false,
-						message: "Maaf, mahasiswa yang bersangkutan telah menyetor surah tersebut! 😫",
+						message:
+							"Maaf, mahasiswa yang bersangkutan telah menyetor surah tersebut! 😫",
 					});
 				}
 
 				// Simpan data ke database
-				await DosenService.postSetoran(nim as string, email_dosen_pa as string, nomorSurahInt as number, tgl_setoran as string);
+				await DosenService.postSetoran(
+					nim as string,
+					email_dosen_pa as string,
+					nomorSurahInt as number,
+					tgl_setoran as string
+				);
 
 				// Kirim respons sukses
-				return res.status(201).json({
+				return res.status(200).json({
 					response: true,
 					message: "Yeay, proses validasi setoran berhasil! ✨",
 				});
 			} catch (error) {
-        if ((error as any).code === "P2010") {
-          return res.status(400).json({
-            response: false,
-            message: "Maaf, sepertinya ada data yang belum ada di database! 😅",
-          });
-        }
-        console.error(`[ERROR] ${error}`);
+				if ((error as any).code === "P2010") {
+					return res.status(400).json({
+						response: false,
+						message: "Maaf, sepertinya ada data yang belum ada di database! 😅",
+					});
+				}
+				console.error(`[ERROR] ${error}`);
 				return res.status(500).json({
 					response: false,
 					message: "Oops! ada kesalahan di server kami 😭",
@@ -114,19 +123,20 @@ class DosenController {
 		}
 
 		try {
-        await DosenService.deleteSetoranByID(id_setoran as string);
-				return res.status(200).json({
-						response: true,
-						message: "Yeay, data setoran berhasil di-batalkan! ✨",
-					});				
+			await DosenService.deleteSetoranByID(id_setoran as string);
+			return res.status(200).json({
+				response: true,
+				message: "Yeay, data setoran berhasil di-batalkan! ✨",
+			});
 		} catch (error) {
-      if ((error as any).code === "P2025") {
-        return res.status(400).json({
-          response: false,
-          message: "Maaf, sepertinya data setoran-nya belum ada di database! 😅",
-        });
-      }
-      console.error(`[ERROR] ${error}`);
+			if ((error as any).code === "P2025") {
+				return res.status(400).json({
+					response: false,
+					message:
+						"Maaf, sepertinya data setoran-nya belum ada di database! 😅",
+				});
+			}
+			console.error(`[ERROR] ${error}`);
 			return res.status(500).json({
 				response: false,
 				message: "Oops! ada kesalahan di server kami 😭",
