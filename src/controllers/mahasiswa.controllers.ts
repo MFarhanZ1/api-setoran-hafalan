@@ -1,147 +1,38 @@
-import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
+import { MahasiswaService } from "../services/mahasiswa.services";
 
-const prisma = new PrismaClient();
-
-interface statsInfoSetoranMahasiswaProps {
-  label: string;
-  jumlah_wajib_setor: number;
-  jumlah_sudah_setor: number;
-  jumlah_belum_setor: number;
-  persentase: string;
+class MahasiswaController {
+  public static async getInfoMahasiswaByEmail (req: Request, res: Response) {
+    const { email } = req.params;
+    try {
+      const resultInfoMahasiswaByEmail = await MahasiswaService.getInfoMahasiswaByEmail(email);
+      if (!resultInfoMahasiswaByEmail) {
+        return res.status(404).json({
+          response: false,
+          message: "Oops! data mahasiswa tidak ditemukan. 😭",
+        });
+      }
+      const resultRingkasanSetoranMahasiswaByNIM = await MahasiswaService.getRingkasanSetoranMahasiswaByNIM(resultInfoMahasiswaByEmail.nim);
+      const resultDetailSetoranMahasiswaByNIM = await MahasiswaService.getDetailSetoranMahasiswaByNIM(resultInfoMahasiswaByEmail.nim);    
+      res.status(200).json({
+        response: true,
+        message: "Berikut info detail mahasiswa beserta riwayat setoran-nya! 😁",
+        data: {
+          info: resultInfoMahasiswaByEmail,
+          setoran: {
+            ringkasan: resultRingkasanSetoranMahasiswaByNIM,
+            detail: resultDetailSetoranMahasiswaByNIM
+          }
+        }
+      });
+    } catch (error) {
+      console.error(`[ERROR] ${error}`);
+      return res.status(500).json({
+        response: false,
+        message: "Oops! ada kesalahan di server kami 😭",
+      });
+    }
+  };
 }
 
-const getInfoMahasiswaByEmail = async (req: Request, res: Response) => {
-  const { email } = req.params;
-  try {
-    // Mengambil data nama, dan nim mahasiswa berdasarkan email
-    const result = await prisma.mahasiswa.findFirst({
-      where: {
-        email: email,
-      },
-      select: {
-        nama: true,
-        nim: true,
-        dosen: {
-          select: {
-            nama: true,
-            nip: true,
-          },
-        },
-      },
-    });
-    res.status(200).json({
-      response: true,
-      message: "data mahasiswa",
-      data: result,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      response: false,
-      message: "internal server error",
-    });
-  }
-};
-
-const getInfoSetoranMahasiswaByNIM = async (req: Request, res: Response) => {
-  const { nim } = req.params;
-  try {
-    // Mengambil data menggunakan query SQL mentah
-    const result = await prisma.$queryRaw`
-			SELECT 
-				surah.label "label",
-				COUNT(*) "jumlah_wajib_setor",
-				COUNT(setoran.id) "jumlah_sudah_setor",
-				(COUNT(*)::numeric - COUNT(setoran.id)::numeric) AS "jumlah_belum_setor",
-				CONCAT(
-					ROUND(
-					(COUNT(setoran.id)::numeric / 
-						COUNT(*)::numeric
-					) * 100, 2
-					)::text,
-					'%'
-				) AS "persentase"
-			FROM
-				surah
-			LEFT JOIN
-				setoran ON setoran.nomor_surah = surah.nomor AND setoran.nim = ${nim}
-			GROUP BY
-				surah.label
-			ORDER BY
-				CASE
-					WHEN surah.label = 'KP' THEN 1
-					WHEN surah.label = 'SEMKP' THEN 2
-					WHEN surah.label = 'DAFTAR_TA' THEN 3
-					WHEN surah.label = 'SEMPRO' THEN 4
-					WHEN surah.label = 'SIDANG_TA' THEN 5
-					ELSE 6
-				END;
-		`;
-
-    const resultWithNumbers = (result as statsInfoSetoranMahasiswaProps[]).map(
-      (item: statsInfoSetoranMahasiswaProps) => ({
-        label: item.label,
-        jumlah_wajib_setor: Number(item.jumlah_wajib_setor),
-        jumlah_sudah_setor: Number(item.jumlah_sudah_setor),
-        jumlah_belum_setor: Number(item.jumlah_belum_setor),
-        persentase: item.persentase,
-      })
-    );
-
-    res.status(200).json({
-      response: true,
-      message: "List detail mahasiswa berdasar nim individu",
-      data: resultWithNumbers,
-    });
-  } catch (error) {
-    console.error("Error executing query:", error);
-    res.status(500).json({
-      response: false,
-      message: "Error retrieving data",
-      error: error,
-    });
-  }
-};
-
-const getAllSetoranMahasiswaByNIM = async (req: any, res: any) => {
-  const { nim } = req.params;
-
-  const result = await prisma.surah.findMany({
-    orderBy: {
-      nomor: "asc",
-    },
-    select: {
-      nomor: true,
-      nama: true, // SELECT SURAH.NAMA
-      label: true, // SELECT SURAH.LABEL
-      setoran: {
-        where: {
-          nim: nim, // Kondisi tambahan pada JOIN: ON SETORAN.NIM = nim
-        },
-        select: {
-          id: true, // SELECT SETORAN.ID
-          tgl_setoran: true, // SELECT SETORAN.TGL_SETORAN
-          tgl_validasi: true, // SELECT SETORAN.TGL_VALIDASI
-          dosen: {
-            select: {
-              nama: true, // SELECT DOSEN.NAMA
-            },
-          },
-        },
-      },
-    },
-  });
-
-  res.status(200).json({
-    response: true,
-    message: "list data setoran mahasiswa",
-    data: result,
-  });
-};
-
-export {
-  getInfoMahasiswaByEmail,
-  getInfoSetoranMahasiswaByNIM,
-  getAllSetoranMahasiswaByNIM,
-};
+export { MahasiswaController };
