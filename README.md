@@ -1,39 +1,39 @@
 <div align="center" style="margin-bottom: 59px;">
-    This repository houses the <b>backend code</b> for Setoran Hafalan Services, the Integrated Quran Memorization Information System.
+    This repository houses the <b>backend (REST-API) code</b> of Setoran Hafalan Services for <a href="dashboard.tif.uin-suska.ac.id">dashboard.tif.uin-suska.ac.id</a>
     </br>
     🔥 Designed to streamline the recitation submission process, particularly for UIN Suska Riau. 🔥
 </div>
 
 <div align="center" style="margin-bottom: 59px;">
-  <a href="https://github.com/riaudevops/api-imemoraise">
+  <a href="https://github.com/riaudevops/api-setoran-hafalan">
     <img width="650px" src="https://github.com/MFarhanZ1/MFarhanZ1/blob/master/API-ETSBPPSQL.png" alt="RTNEPSQL Logo" />
   </a>
 </div>
 
 <p align="center">
-  Setoran Hafalan Services (new ver of iMemoraise): Integrated Quran Memorization Information System UIN Suska Riau
+  Setoran Hafalan Services (new ver of iMemoraise): Integrated Quran Memorization Information System USR
   </br> 
   <i>(build with 💚💜 using: Express TS + Prisma-ORM + Bun + PostgreSQL)</i>
 </p>
 
 <div align="center">
-  <a href="https://circleci.com/gh/riaudevops/api-imemoraise">
-    <img src="https://img.shields.io/circleci/project/github/riaudevops/api-imemoraise/master.svg?style=flat-square" alt="CircleCI branch" />
+  <a href="https://circleci.com/gh/riaudevops/api-setoran-hafalan">
+    <img src="https://img.shields.io/circleci/project/github/riaudevops/api-setoran-hafalan/master.svg?style=flat-square" alt="CircleCI branch" />
   </a>
-  <a href="https://github.com/riaudevops/api-imemoraise/network">
-    <img src="https://img.shields.io/github/forks/riaudevops/api-imemoraise.svg" alt="GitHub Forks" />
+  <a href="https://github.com/riaudevops/api-setoran-hafalan/network">
+    <img src="https://img.shields.io/github/forks/riaudevops/api-setoran-hafalan.svg" alt="GitHub Forks" />
   </a>
-  <a href="https://github.com/riaudevops/api-imemoraise/stargazers">
-    <img src="https://img.shields.io/github/stars/riaudevops/api-imemoraise.svg" alt="GitHub Stars" />
+  <a href="https://github.com/riaudevops/api-setoran-hafalan/stargazers">
+    <img src="https://img.shields.io/github/stars/riaudevops/api-setoran-hafalan.svg" alt="GitHub Stars" />
   </a>
-  <a href="https://github.com/riaudevops/api-imemoraise/issues">
-    <img src="https://img.shields.io/github/issues/riaudevops/api-imemoraise.svg" alt="GitHub Issues" />
+  <a href="https://github.com/riaudevops/api-setoran-hafalan/issues">
+    <img src="https://img.shields.io/github/issues/riaudevops/api-setoran-hafalan.svg" alt="GitHub Issues" />
   </a>
-  <a href="https://github.com/riaudevops/api-imemoraise/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/riaudevops/api-imemoraise.svg" alt="GitHub License" />
+  <a href="https://github.com/riaudevops/api-setoran-hafalan/blob/master/LICENSE">
+    <img src="https://img.shields.io/github/license/riaudevops/api-setoran-hafalan.svg" alt="GitHub License" />
   </a>
-  <a href="https://coveralls.io/github/riaudevops/api-imemoraise">
-    <img src="https://coveralls.io/repos/github/riaudevops/api-imemoraise/badge.svg" alt="Coverage Status" />
+  <a href="https://coveralls.io/github/riaudevops/api-setoran-hafalan">
+    <img src="https://coveralls.io/repos/github/riaudevops/api-setoran-hafalan/badge.svg" alt="Coverage Status" />
   </a>
 </div>
 
@@ -41,7 +41,7 @@
 
 [underconstruction]: https://img.shields.io/badge/Status-WIP-FFFF00?style=for-the-badge&logoColor=FFFF00
 
-## ✨ What’s the deal with Setoran Hafalan Services? ✨ // ✧˚ ༘ ⋆｡♡˚ ![underconstruction][underconstruction]
+## ✨ What’s the deal with this services? ✨ // ✧˚ ༘ ⋆｡♡˚ ![underconstruction][underconstruction]
 
 **Setoran Hafalan Services - 
 or what we previously knew as iMemoraise** _(Integrated Quran Memorization Information System)_ is a comprehensive web application created to enhance the management and tracking of Quran recitations. This system is specifically designed to support educational institutions in overseeing and recording students' recitations, **which are mandatory for progressing to internships, seminars, final projects, and other academic activities.** By providing a streamlined platform for tracking these essential recitations, Setoran Hafalan Services simplifies the administrative process, ensuring that all requirements are met efficiently. This application is particularly tailored for use at [UIN Suska Riau](https://www.uin-suska.ac.id/), _where it aids in managing students' academic progress and compliance_ with Quran memorization prerequisites.
@@ -104,4 +104,4 @@ To contribute, fork the repository, create a pull request, or open a new issue t
 ## 📙 License
 
 [No-License](LICENSE.md) // ✧˚ ༘ ⋆｡♡˚
-[![License](https://img.shields.io/github/license/riaudevops/api-imemoraise.svg)](https://github.com/riaudevops/api-imemoraise/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/riaudevops/api-setoran-hafalan.svg)](https://github.com/riaudevops/api-setoran-hafalan/blob/master/LICENSE)
