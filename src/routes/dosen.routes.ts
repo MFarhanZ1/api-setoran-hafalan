@@ -1,38 +1,19 @@
 import express from "express";
-import accessTokenValidation from "../middlewares/auth.middlewares.js";
-import {
-  deleteSetoranByID,
-  findMahasiswaByNameOrNim,
-  getInfoDosenByEmail,
-  postSetoran,
-} from "../controllers/dosen.controllers.js";
-import { authorizeRoles } from "../middlewares/protected.middlewares.js";
+import { DosenController } from "../controllers/dosen.controllers.js";
 
 const router = express.Router();
 
 router.get(
-  "/dosen/info/:email",
-  accessTokenValidation,
-  authorizeRoles("dosen-pa"),
-  getInfoDosenByEmail
-);
-router.get(
-  "/dosen/mahasiswa",
-  accessTokenValidation,
-  authorizeRoles("dosen-pa"),
-  findMahasiswaByNameOrNim
+  "/v1/dosen/:email",
+  DosenController.getInfoDosenByEmail
 );
 router.post(
-  "/dosen/mahasiswa/setoran",
-  accessTokenValidation,
-  authorizeRoles("dosen-pa"),
-  postSetoran
+  "/v1/dosen/setor",
+  DosenController.postSetoran
 );
 router.delete(
-  "/dosen/mahasiswa/setoran/:id_setoran",
-  accessTokenValidation,
-  authorizeRoles("dosen-pa"),
-  deleteSetoranByID
+  "/v1/dosen/setor/:id_setoran",
+  DosenController.deleteSetoranByID
 );
 
 export default router;
