@@ -2,12 +2,12 @@ version: '3.8'
 
 services:
   api-setoran-hafalan:
-    image: ghcr.io/riaudevops/api-setoran-hafalan:1.1.3
+    image: ghcr.io/riaudevops/api-setoran-hafalan:latest
     container_name: api-setoran-hafalan
     ports:
       - "5000:5000"
     environment:
-      - DATABASE_URL=postgresql://postgres:123321@postgres:5432/db_setoran_hafalan?schema=public
+      DATABASE_URL: postgresql://postgres:123321@postgres:5432/db_setoran_hafalan?schema=public
     depends_on:
       - postgres
 
