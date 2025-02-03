@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { DosenHelper } from "../helpers/dosen.helpers";
+import { DosenHelper } from "../helpers/dosen.helpers.js";
 const prisma = new PrismaClient();
 
 class DosenService {
