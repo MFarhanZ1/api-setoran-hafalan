@@ -1,0 +1,11 @@
+node_modules
+.git*
+.dist
+README.md
+
+# For Env Ignore
+.env.example
+.env.production
+.env.development
+
+*.log
