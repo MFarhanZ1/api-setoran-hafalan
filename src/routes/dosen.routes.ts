@@ -4,15 +4,15 @@ import { DosenController } from "../controllers/dosen.controllers.js";
 const router = express.Router();
 
 router.get(
-  "/v1/dosen/:email",
+  "/dosen/:email",
   DosenController.getInfoDosenByEmail
 );
 router.post(
-  "/v1/dosen/setor",
+  "/dosen/setor",
   DosenController.postSetoran
 );
 router.delete(
-  "/v1/dosen/setor/:id_setoran",
+  "/dosen/setor/:id_setoran",
   DosenController.deleteSetoranByID
 );
 
