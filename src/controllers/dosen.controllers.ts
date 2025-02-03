@@ -24,7 +24,7 @@ class DosenController {
 				});
 			}
 
-			res.status(200).json({
+			return res.status(200).json({
 				response: true,
 				message:
 					"Berikut info dosen lengkap serta detail mahasiswa per angkatan (max 8 akt)! 😁",
@@ -39,7 +39,7 @@ class DosenController {
 			});
 		} catch (error) {
 			console.error(`[ERROR] ${error}`);
-			res.status(500).json({
+			return res.status(500).json({
 				response: false,
 				message: "Oops! ada kesalahan di server kami. 😭",
 			});
@@ -60,7 +60,7 @@ class DosenController {
     }
     
     // Validasi input
-		if (DosenHelper.validasiPostSetoran(nim, email_dosen_pa, nomorSurahInt )) {
+		if (DosenHelper.validatePostSetoran(nim, email_dosen_pa, nomorSurahInt )) {
 			return res.status(400).json({
 				response: false,
 				message: "Waduh, lengkapi dulu datanya mas! 😡",
@@ -74,7 +74,7 @@ class DosenController {
 				if (existingSetoran) {
 					return res.status(400).json({
 						response: false,
-						message: "Maaf, mahasiswa ybs telah menyetor surah tersebut!",
+						message: "Maaf, mahasiswa yang bersangkutan telah menyetor surah tersebut! 😫",
 					});
 				}
 
@@ -82,13 +82,19 @@ class DosenController {
 				await DosenService.postSetoran(nim as string, email_dosen_pa as string, nomorSurahInt as number, tgl_setoran as string);
 
 				// Kirim respons sukses
-				res.status(201).json({
+				return res.status(201).json({
 					response: true,
 					message: "Yeay, proses validasi setoran berhasil! ✨",
 				});
 			} catch (error) {
+        if ((error as any).code === "P2010") {
+          return res.status(400).json({
+            response: false,
+            message: "Maaf, sepertinya ada data yang belum ada di database! 😅",
+          });
+        }
         console.error(`[ERROR] ${error}`);
-				res.status(500).json({
+				return res.status(500).json({
 					response: false,
 					message: "Oops! ada kesalahan di server kami 😭",
 				});
@@ -100,27 +106,27 @@ class DosenController {
 		const { id_setoran } = req.params;
 
 		// Validasi input
-		if (!id_setoran) {
+		if (DosenHelper.validateDeleteSetoran(id_setoran)) {
 			return res.status(400).json({
 				response: false,
-				message: "Waduh, id setoran-nya kagak ada mas, apa yang mau diapus!",
+				message: "Waduh, id setoran-nya kagak ada mas, apa yang mau diapus! 😡",
 			});
 		}
 
 		try {
-			await prisma.setoran
-				.delete({
-					where: {
-						id: id_setoran,
-					},
-				})
-				.then(() => {
-					return res.status(200).json({
+        await DosenService.deleteSetoranByID(id_setoran as string);
+				return res.status(200).json({
 						response: true,
 						message: "Yeay, data setoran berhasil di-batalkan! ✨",
-					});
-				});
+					});				
 		} catch (error) {
+      if ((error as any).code === "P2025") {
+        return res.status(400).json({
+          response: false,
+          message: "Maaf, sepertinya data setoran-nya belum ada di database! 😅",
+        });
+      }
+      console.error(`[ERROR] ${error}`);
 			return res.status(500).json({
 				response: false,
 				message: "Oops! ada kesalahan di server kami 😭",
