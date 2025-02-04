@@ -2,11 +2,11 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 interface statsInfoSetoranMahasiswaProps {
-    label: string;
-    jumlah_wajib_setor: number;
-    jumlah_sudah_setor: number;
-    jumlah_belum_setor: number;
-    persentase: string;
+	label: string;
+	jumlah_wajib_setor: number;
+	jumlah_sudah_setor: number;
+	jumlah_belum_setor: number;
+	persentase: string;
 }
 
 class MahasiswaService {
@@ -28,11 +28,11 @@ class MahasiswaService {
             mhs.nip = dosen.nip
             AND mhs.email = ${email};
         `;
-        return (result as any)[0];
+		return (result as any)[0];
 	}
 
-    public static async getRingkasanSetoranMahasiswaByNIM(nim: string) {
-        const result = await prisma.$queryRaw`
+	public static async getRingkasanSetoranMahasiswaByNIM(nim: string) {
+		const result = await prisma.$queryRaw`
 			SELECT 
 				surah.label "label",
 				COUNT(*) "jumlah_wajib_setor",
@@ -43,8 +43,7 @@ class MahasiswaService {
 					(COUNT(setoran.id)::numeric / 
 						COUNT(*)::numeric
 					) * 100, 2
-					)::text,
-					'%'
+					)::text					
 				) AS "persentase"
 			FROM
 				surah
@@ -69,38 +68,38 @@ class MahasiswaService {
 				jumlah_wajib_setor: Number(item.jumlah_wajib_setor),
 				jumlah_sudah_setor: Number(item.jumlah_sudah_setor),
 				jumlah_belum_setor: Number(item.jumlah_belum_setor),
-				persentase: item.persentase,
+				persentase: parseFloat(item.persentase),
 			})
 		);
-    }
+	}
 
-    public static async getDetailSetoranMahasiswaByNIM(nim: string) {
-        return await prisma.surah.findMany({
-            orderBy: {
-                nomor: "asc",
-            },
-            select: {
-                nomor: true,
-                nama: true, // SELECT SURAH.NAMA
-                label: true, // SELECT SURAH.LABEL
-                setoran: {
-                    where: {
-                        nim: nim, // Kondisi tambahan pada JOIN: ON SETORAN.NIM = nim
-                    },
-                    select: {
-                        id: true, // SELECT SETORAN.ID
-                        tgl_setoran: true, // SELECT SETORAN.TGL_SETORAN
-                        tgl_validasi: true, // SELECT SETORAN.TGL_VALIDASI
-                        dosen: {
-                            select: {
-                                nama: true, // SELECT DOSEN.NAMA
-                            },
-                        },
-                    },
-                },
-            },
-        });
-    }
+	public static async getDetailSetoranMahasiswaByNIM(nim: string) {
+		return await prisma.surah.findMany({
+			orderBy: {
+				nomor: "asc",
+			},
+			select: {
+				nomor: true,
+				nama: true, // SELECT SURAH.NAMA
+				label: true, // SELECT SURAH.LABEL
+				setoran: {
+					where: {
+						nim: nim, // Kondisi tambahan pada JOIN: ON SETORAN.NIM = nim
+					},
+					select: {
+						id: true, // SELECT SETORAN.ID
+						tgl_setoran: true, // SELECT SETORAN.TGL_SETORAN
+						tgl_validasi: true, // SELECT SETORAN.TGL_VALIDASI
+						dosen: {
+							select: {
+								nama: true, // SELECT DOSEN.NAMA
+							},
+						},
+					},
+				},
+			},
+		});
+	}
 }
 
-export { MahasiswaService }
+export { MahasiswaService };
