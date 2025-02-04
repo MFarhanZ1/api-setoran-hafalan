@@ -1,9 +1,6 @@
 import { Request, Response } from "express";
 import { MahasiswaService } from "../services/mahasiswa.services.js";
-
-interface CustomRequest extends Request {
-	email?: string;
-}
+import { RequestPayloadProps } from "../types/common.interface.js";
 
 class MahasiswaController {
 	public static async getInfoMahasiswaByEmail(req: Request, res: Response) {
@@ -47,7 +44,7 @@ class MahasiswaController {
 	}
 
 	public static async getSetoranSaya(req: Request, res: Response) {
-		const email = (req as CustomRequest).email!;
+		const email = (req as RequestPayloadProps).email!;
 		try {
 			const resultInfoMahasiswaByEmail =
 				await MahasiswaService.getInfoMahasiswaByEmail(email);

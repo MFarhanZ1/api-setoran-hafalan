@@ -2,12 +2,9 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { DosenService } from "../services/dosen.services.js";
 import { DosenHelper } from "../helpers/dosen.helpers.js";
+import { RequestPayloadProps } from "../types/common.interface.js";
 
 const prisma = new PrismaClient();
-
-interface CustomRequest extends Request {
-	email?: string;
-}
 
 class DosenController {
 	public static async getInfoDosenByEmail(req: Request, res: Response) {
@@ -51,8 +48,8 @@ class DosenController {
 	}
 
 	public static async getPASaya(req: Request, res: Response) {
-		const email = (req as CustomRequest).email!;
-		console.log(email);
+		const email = (req as RequestPayloadProps).email!;
+
 		try {
 			const resultInfoDosen = await DosenService.getInfoDosenByEmail(email);
 			const resultInfoMahasiswaPerAngkatan =
