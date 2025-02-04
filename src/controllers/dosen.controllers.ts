@@ -5,10 +5,54 @@ import { DosenHelper } from "../helpers/dosen.helpers.js";
 
 const prisma = new PrismaClient();
 
+interface CustomRequest extends Request {
+	email?: string;
+}
+
 class DosenController {
 	public static async getInfoDosenByEmail(req: Request, res: Response) {
 		const { email } = req.params;
 
+		try {
+			const resultInfoDosen = await DosenService.getInfoDosenByEmail(email);
+			const resultInfoMahasiswaPerAngkatan =
+				await DosenService.getInfoMahasiswaPAPerAngkatanByEmail(email);
+			const resultListMahasiswaPA = await DosenService.getMahasiswaPAByEmail(
+				email
+			);
+
+			if (!resultInfoDosen) {
+				return res.status(404).json({
+					response: false,
+					message: "Oops! data dosen tidak ditemukan. 😭",
+				});
+			}
+
+			return res.status(200).json({
+				response: true,
+				message:
+					"Berikut info dosen lengkap serta detail mahasiswa per angkatan (max 8 akt)! 😁",
+				data: {
+					nama: resultInfoDosen!.nama,
+					nip: resultInfoDosen!.nip,
+					info_mahasiswa_pa: {
+						ringkasan: resultInfoMahasiswaPerAngkatan,
+						daftar_mahasiswa: resultListMahasiswaPA,
+					},
+				},
+			});
+		} catch (error) {
+			console.error(`[ERROR] ${error}`);
+			return res.status(500).json({
+				response: false,
+				message: "Oops! ada kesalahan di server kami. 😭",
+			});
+		}
+	}
+
+	public static async getPASaya(req: Request, res: Response) {
+		const email = (req as CustomRequest).email!;
+		console.log(email);
 		try {
 			const resultInfoDosen = await DosenService.getInfoDosenByEmail(email);
 			const resultInfoMahasiswaPerAngkatan =
