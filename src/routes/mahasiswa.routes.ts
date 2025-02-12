@@ -6,13 +6,13 @@ const router = express.Router();
 
 router.get(
 	"/mahasiswa/setoran/:email",
-	AuthMiddleware.tokenValidation,
+	AuthMiddleware.tokenExtraction,
 	MahasiswaController.getInfoMahasiswaByEmail
 );
 
 router.get(
 	"/mahasiswa/setoran-saya",
-	AuthMiddleware.tokenValidation,
+	AuthMiddleware.tokenExtraction,
 	MahasiswaController.getSetoranSaya
 );
 
