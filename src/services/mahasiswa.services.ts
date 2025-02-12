@@ -95,7 +95,7 @@ class MahasiswaService {
 			},
 		});
 
-		return result.map((surah) => ({
+		return (result as any).map((surah: any) => ({
 			nomor: surah.nomor,
 			nama: surah.nama,
 			label: surah.label,
