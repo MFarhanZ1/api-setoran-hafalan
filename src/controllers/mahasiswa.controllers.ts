@@ -22,13 +22,15 @@ class MahasiswaController {
 				await MahasiswaService.getDetailSetoranMahasiswaByNIM(
 					resultInfoMahasiswaByEmail.nim
 				);
-			res.status(200).json({
+			const resultInfoDasarSetoran = await MahasiswaService.getinfoDasarSetoranMahasiswaByNIM(resultInfoMahasiswaByEmail.nim);
+			return res.status(200).json({
 				response: true,
 				message:
 					"Berikut info detail mahasiswa beserta riwayat setoran-nya! 😁",
 				data: {
 					info: resultInfoMahasiswaByEmail,
 					setoran: {
+						info_dasar: resultInfoDasarSetoran,
 						ringkasan: resultRingkasanSetoranMahasiswaByNIM,
 						detail: resultDetailSetoranMahasiswaByNIM,
 					},
@@ -44,7 +46,13 @@ class MahasiswaController {
 	}
 
 	public static async getSetoranSaya(req: Request, res: Response) {
-		const email = (req as RequestPayloadProps).email!;
+		const { email } = (req as RequestPayloadProps);
+		if (!email) {
+			return res.status(400).json({
+				response: false,
+				message: "Waduh, email-nya kagak ada mas! 😡",
+			});
+		}
 		try {
 			const resultInfoMahasiswaByEmail =
 				await MahasiswaService.getInfoMahasiswaByEmail(email);
@@ -62,13 +70,16 @@ class MahasiswaController {
 				await MahasiswaService.getDetailSetoranMahasiswaByNIM(
 					resultInfoMahasiswaByEmail.nim
 				);
-			res.status(200).json({
+				const resultInfoDasarSetoran = await MahasiswaService.getinfoDasarSetoranMahasiswaByNIM(resultInfoMahasiswaByEmail.nim);
+
+			return res.status(200).json({
 				response: true,
 				message:
 					"Berikut info detail mahasiswa beserta riwayat setoran-nya! 😁",
 				data: {
 					info: resultInfoMahasiswaByEmail,
 					setoran: {
+						info_dasar: resultInfoDasarSetoran,
 						ringkasan: resultRingkasanSetoranMahasiswaByNIM,
 						detail: resultDetailSetoranMahasiswaByNIM,
 					},
