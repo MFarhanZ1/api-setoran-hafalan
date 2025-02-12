@@ -9,11 +9,11 @@ const port = 5000;
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
+app.get('', (req, res) => {
   return res.status(200).json({
     'response': true,
     'message': 'Cihuy, Halow Semua 👋 ~ Selamat datang di API Setoran Hafalan! 🎉',
-    'version': 'v1.1.4-alpha',
+    'version': 'v1.2.7-alpha',
     'contributor': 'https://github.com/riaudevops/api-setoran-hafalan/graphs/contributors',
     'timezone': 'Asia/Jakarta ~ ' + new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })
   })
