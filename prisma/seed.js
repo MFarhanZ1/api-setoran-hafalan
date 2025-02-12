@@ -44,14 +44,16 @@ async function main() {
             { nomor: 113, nama: 'Al-Falaq', label: 'SIDANG_TA' },
             { nomor: 114, nama: 'An-Nas', label: 'SIDANG_TA' }
         ]
+    }).then(() => {
+        return console.log("[INFO] Data seeding for 'surah' is completed! ✨");
+    }).catch(() => {
+        return console.error(`[ERROR] Data seeding for 'surah' may have failed or might have been inserted previously!`);
     });
-
-    console.log("[INFO] Data seeding is totally completed! ✨");
 }
 
 main()
     .catch(e => {
-        console.error(`[ERROR] ${e.message}`);
+        return console.error(`[ERROR] ${e.message}`);
     })
     .finally(async () => {
         await prisma.$disconnect();
