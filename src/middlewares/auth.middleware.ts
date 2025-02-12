@@ -1,36 +1,23 @@
 import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-
-// Extend Request type to include 'role'
-interface CustomRequest extends Request {
-	email?: string;
-}
+import { RequestPayloadProps } from "../types/common.interface";
 
 class AuthMiddleware {
-	public static tokenValidation = (
+	public static tokenExtraction = (
 		req: Request,
 		res: Response,
 		next: NextFunction
 	) => {
 		const { authorization } = req.headers;
-		const token = authorization && authorization.split(" ")[1];
-
+		const token = authorization && authorization.split(" ").length > 1 && authorization.split(" ")[1];
 		if (!token) {
 			return res.status(401).json({
 				response: false,
 				message: "Token is required",
 			});
 		}
-
-		const decoded = jwt.decode(token);
-
-		// Type assertion to make sure 'decoded' is treated as JwtPayload
-		const jwtPayload = decoded as JwtPayload;
-
-		// // Extract email from the decoded token
-		const email = jwtPayload.email;
-
-		(req as CustomRequest).email = email;
+		const jwtPayload = jwt.decode(token) as JwtPayload;
+		(req as RequestPayloadProps).email = jwtPayload.email;
 		next();
 	};
 }
