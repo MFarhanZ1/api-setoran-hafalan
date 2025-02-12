@@ -5,23 +5,23 @@ import AuthMiddleware from "../middlewares/auth.middleware.js";
 const router = express.Router();
 
 router.get(
-	"/dosen/get-mahasiswa/:email",
-	AuthMiddleware.tokenValidation,
+	"/dosen/pa/:email",
+	AuthMiddleware.tokenExtraction,
 	DosenController.getInfoDosenByEmail
 );
 router.get(
 	"/dosen/pa-saya",
-	AuthMiddleware.tokenValidation,
+	AuthMiddleware.tokenExtraction,
 	DosenController.getPASaya
 );
 router.post(
 	"/dosen/setor",
-	AuthMiddleware.tokenValidation,
+	AuthMiddleware.tokenExtraction,
 	DosenController.postSetoran
 );
 router.delete(
 	"/dosen/setor/:id_setoran",
-	AuthMiddleware.tokenValidation,
+	AuthMiddleware.tokenExtraction,
 	DosenController.deleteSetoranByID
 );
 
