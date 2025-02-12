@@ -9,7 +9,12 @@ const prisma = new PrismaClient();
 class DosenController {
 	public static async getInfoDosenByEmail(req: Request, res: Response) {
 		const { email } = req.params;
-
+		if (!email) {
+			return res.status(400).json({
+				response: false,
+				message: "Waduh, email-nya kagak ada mas! 😡",
+			});
+		}
 		try {
 			const resultInfoDosen = await DosenService.getInfoDosenByEmail(email);
 			const resultInfoMahasiswaPerAngkatan =
@@ -48,8 +53,13 @@ class DosenController {
 	}
 
 	public static async getPASaya(req: Request, res: Response) {
-		const email = (req as RequestPayloadProps).email!;
-
+		const { email } = (req as RequestPayloadProps);
+		if (!email) {
+			return res.status(400).json({
+				response: false,
+				message: "Waduh, email-nya kagak ada mas! 😡",
+			});
+		}
 		try {
 			const resultInfoDosen = await DosenService.getInfoDosenByEmail(email);
 			const resultInfoMahasiswaPerAngkatan =
