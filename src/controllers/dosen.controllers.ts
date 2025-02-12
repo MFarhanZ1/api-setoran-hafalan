@@ -2,13 +2,64 @@ import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import { DosenService } from "../services/dosen.services.js";
 import { DosenHelper } from "../helpers/dosen.helpers.js";
+import { RequestPayloadProps } from "../types/common.interface.js";
 
 const prisma = new PrismaClient();
 
 class DosenController {
 	public static async getInfoDosenByEmail(req: Request, res: Response) {
 		const { email } = req.params;
+		if (!email) {
+			return res.status(400).json({
+				response: false,
+				message: "Waduh, email-nya kagak ada mas! 😡",
+			});
+		}
+		try {
+			const resultInfoDosen = await DosenService.getInfoDosenByEmail(email);
+			const resultInfoMahasiswaPerAngkatan =
+				await DosenService.getInfoMahasiswaPAPerAngkatanByEmail(email);
+			const resultListMahasiswaPA = await DosenService.getMahasiswaPAByEmail(
+				email
+			);
 
+			if (!resultInfoDosen) {
+				return res.status(404).json({
+					response: false,
+					message: "Oops! data dosen tidak ditemukan. 😭",
+				});
+			}
+
+			return res.status(200).json({
+				response: true,
+				message:
+					"Berikut info dosen lengkap serta detail mahasiswa per angkatan (max 8 akt)! 😁",
+				data: {
+					nama: resultInfoDosen!.nama,
+					nip: resultInfoDosen!.nip,
+					info_mahasiswa_pa: {
+						ringkasan: resultInfoMahasiswaPerAngkatan,
+						daftar_mahasiswa: resultListMahasiswaPA,
+					},
+				},
+			});
+		} catch (error) {
+			console.error(`[ERROR] ${error}`);
+			return res.status(500).json({
+				response: false,
+				message: "Oops! ada kesalahan di server kami. 😭",
+			});
+		}
+	}
+
+	public static async getPASaya(req: Request, res: Response) {
+		const { email } = (req as RequestPayloadProps);
+		if (!email) {
+			return res.status(400).json({
+				response: false,
+				message: "Waduh, email-nya kagak ada mas! 😡",
+			});
+		}
 		try {
 			const resultInfoDosen = await DosenService.getInfoDosenByEmail(email);
 			const resultInfoMahasiswaPerAngkatan =
