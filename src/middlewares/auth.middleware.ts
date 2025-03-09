@@ -17,7 +17,14 @@ class AuthMiddleware {
 			});
 		}
 		const jwtPayload = jwt.decode(token) as JwtPayload;
-		(req as RequestPayloadProps).email = jwtPayload.email;
+		try {
+			(req as RequestPayloadProps).email = jwtPayload.email;
+		} catch (errror) {
+			return res.status(401).json({
+				response: false,
+				message: "Invalid token",
+			});
+		}
 		next();
 	};
 }
