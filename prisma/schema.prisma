@@ -17,12 +17,12 @@ model dosen {
 }
 
 model mahasiswa {
-  nim      String    @id @db.VarChar(11)
-  nama     String    @db.VarChar(255)
-  email    String    @unique @db.VarChar(255)
-  id_dosen String?   @db.Uuid
-  dosen    dosen?    @relation(fields: [id_dosen], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  setoran  setoran[]
+  nim         String    @id @db.VarChar(11)
+  nama        String    @db.VarChar(255)
+  email       String    @unique @db.VarChar(255)
+  id_dosen_pa String    @db.Uuid
+  dosen       dosen     @relation(fields: [id_dosen_pa], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  setoran     setoran[]
 }
 
 model setoran {
@@ -30,9 +30,9 @@ model setoran {
   tgl_setoran  DateTime? @default(now()) @db.Date
   tgl_validasi DateTime? @default(now()) @db.Date
   nim          String    @db.VarChar(11)
-  id_dosen     String    @db.Uuid
+  id_dosen_pa  String    @db.Uuid
   nomor_surah  Int
-  dosen        dosen     @relation(fields: [id_dosen], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  dosen        dosen     @relation(fields: [id_dosen_pa], references: [id], onDelete: NoAction, onUpdate: NoAction)
   mahasiswa    mahasiswa @relation(fields: [nim], references: [nim], onDelete: NoAction, onUpdate: NoAction, map: "fk_nim_setoran")
   surah        surah     @relation(fields: [nomor_surah], references: [nomor], onDelete: NoAction, onUpdate: NoAction, map: "fk_nomor_surah_setoran")
 
