@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client";
-import { DosenHelper } from "../helpers/dosen.helpers.js";
 const prisma = new PrismaClient();
 
 class DosenService {
@@ -98,19 +97,15 @@ class DosenService {
 		nomor_surah: number,
 		tgl_setoran: string
 	) {
-		const idSetoran = DosenHelper.getIDSetoran();
 		const tglSetoran = tgl_setoran ? new Date(tgl_setoran) : new Date();
-		const tglValidasi = new Date();
 
 		return await prisma.$queryRaw`
 			INSERT INTO 
-				"setoran" ("id", "tgl_setoran", "tgl_validasi", "nim", "nip", "nomor_surah") 
+				"setoran" ("tgl_setoran", "nim", "id_dosen_pa", "nomor_surah") 
 			VALUES (
-				${idSetoran}, 
 				${tglSetoran}, 
-				${tglValidasi}, 
 				${nim}, 
-				(SELECT nip FROM dosen WHERE email=${email_dosen_pa}), 
+				(SELECT id FROM dosen WHERE email=${email_dosen_pa}), 
 				${nomor_surah}
 			);
 		`;
