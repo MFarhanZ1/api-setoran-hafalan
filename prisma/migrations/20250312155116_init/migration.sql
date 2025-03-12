@@ -3,12 +3,11 @@ CREATE TYPE "type_label_surah" AS ENUM ('KP', 'SEMKP', 'DAFTAR_TA', 'SEMPRO', 'S
 
 -- CreateTable
 CREATE TABLE "dosen" (
-    "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+    "nip" VARCHAR(18) NOT NULL,
     "nama" VARCHAR(255) NOT NULL,
     "email" VARCHAR(255) NOT NULL,
-    "nip" VARCHAR(18) NOT NULL,
 
-    CONSTRAINT "dosen_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "dosen_pkey" PRIMARY KEY ("nip")
 );
 
 -- CreateTable
@@ -16,7 +15,7 @@ CREATE TABLE "mahasiswa" (
     "nim" VARCHAR(11) NOT NULL,
     "nama" VARCHAR(255) NOT NULL,
     "email" VARCHAR(255) NOT NULL,
-    "id_dosen_pa" UUID NOT NULL,
+    "nip" VARCHAR(18) NOT NULL,
 
     CONSTRAINT "mahasiswa_pkey" PRIMARY KEY ("nim")
 );
@@ -27,7 +26,7 @@ CREATE TABLE "setoran" (
     "tgl_setoran" DATE DEFAULT CURRENT_TIMESTAMP,
     "tgl_validasi" DATE DEFAULT CURRENT_TIMESTAMP,
     "nim" VARCHAR(11) NOT NULL,
-    "id_dosen_pa" UUID NOT NULL,
+    "nip" VARCHAR(18) NOT NULL,
     "nomor_surah" INTEGER NOT NULL,
 
     CONSTRAINT "setoran_pkey" PRIMARY KEY ("id")
@@ -46,22 +45,19 @@ CREATE TABLE "surah" (
 CREATE UNIQUE INDEX "dosen_email_key" ON "dosen"("email");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "dosen_nip_key" ON "dosen"("nip");
-
--- CreateIndex
 CREATE UNIQUE INDEX "mahasiswa_email_key" ON "mahasiswa"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "setoran_nim_nomor_surah_key" ON "setoran"("nim", "nomor_surah");
 
 -- AddForeignKey
-ALTER TABLE "mahasiswa" ADD CONSTRAINT "mahasiswa_id_dosen_pa_fkey" FOREIGN KEY ("id_dosen_pa") REFERENCES "dosen"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
-
--- AddForeignKey
-ALTER TABLE "setoran" ADD CONSTRAINT "setoran_id_dosen_pa_fkey" FOREIGN KEY ("id_dosen_pa") REFERENCES "dosen"("id") ON DELETE NO ACTION ON UPDATE NO ACTION;
+ALTER TABLE "mahasiswa" ADD CONSTRAINT "mahasiswa_nip_fkey" FOREIGN KEY ("nip") REFERENCES "dosen"("nip") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "setoran" ADD CONSTRAINT "fk_nim_setoran" FOREIGN KEY ("nim") REFERENCES "mahasiswa"("nim") ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- AddForeignKey
+ALTER TABLE "setoran" ADD CONSTRAINT "setoran_nip_fkey" FOREIGN KEY ("nip") REFERENCES "dosen"("nip") ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 -- AddForeignKey
 ALTER TABLE "setoran" ADD CONSTRAINT "fk_nomor_surah_setoran" FOREIGN KEY ("nomor_surah") REFERENCES "surah"("nomor") ON DELETE NO ACTION ON UPDATE NO ACTION;
