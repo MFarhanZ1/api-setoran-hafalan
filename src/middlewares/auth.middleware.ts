@@ -22,7 +22,7 @@ class AuthMiddleware {
 		} catch (errror) {
 			return res.status(401).json({
 				response: false,
-				message: "Invalid token",
+				message: "Oops, you brought an invalid token format! 😠",
 			});
 		}
 		next();
