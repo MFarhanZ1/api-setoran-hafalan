@@ -8,36 +8,39 @@ datasource db {
 }
 
 model dosen {
-  nip       String      @id(map: "pk_nip_dosen") @db.VarChar(18)
+  id        String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   nama      String      @db.VarChar(255)
   email     String      @unique @db.VarChar(255)
+  nip       String      @unique @db.VarChar(18)
   mahasiswa mahasiswa[]
   setoran   setoran[]
 }
 
 model mahasiswa {
-  nim     String    @id(map: "pk_nim_mahasiswa") @db.VarChar(11)
-  nama    String    @db.VarChar(255)
-  email   String    @unique @db.VarChar(255)
-  nip     String    @db.VarChar(18)
-  dosen   dosen     @relation(fields: [nip], references: [nip], onDelete: NoAction, onUpdate: NoAction, map: "fk_nip_mahasiswa")
-  setoran setoran[]
+  nim      String    @id @db.VarChar(11)
+  nama     String    @db.VarChar(255)
+  email    String    @unique @db.VarChar(255)
+  id_dosen String?   @db.Uuid
+  dosen    dosen?    @relation(fields: [id_dosen], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  setoran  setoran[]
 }
 
 model setoran {
-  id           String    @id(map: "pk_id_setoran") @db.VarChar(8)
-  tgl_setoran  DateTime  @default(now()) @db.Date
-  tgl_validasi DateTime  @default(now()) @db.Date
+  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tgl_setoran  DateTime? @default(now()) @db.Date
+  tgl_validasi DateTime? @default(now()) @db.Date
   nim          String    @db.VarChar(11)
-  nip          String    @db.VarChar(18)
+  id_dosen     String    @db.Uuid
   nomor_surah  Int
+  dosen        dosen     @relation(fields: [id_dosen], references: [id], onDelete: NoAction, onUpdate: NoAction)
   mahasiswa    mahasiswa @relation(fields: [nim], references: [nim], onDelete: NoAction, onUpdate: NoAction, map: "fk_nim_setoran")
-  dosen        dosen     @relation(fields: [nip], references: [nip], onDelete: NoAction, onUpdate: NoAction, map: "fk_nip_setoran")
   surah        surah     @relation(fields: [nomor_surah], references: [nomor], onDelete: NoAction, onUpdate: NoAction, map: "fk_nomor_surah_setoran")
+
+  @@unique([nim, nomor_surah])
 }
 
 model surah {
-  nomor   Int               @id(map: "pk_nomor_surah")
+  nomor   Int               @id
   nama    String            @db.VarChar(25)
   label   type_label_surah?
   setoran setoran[]
