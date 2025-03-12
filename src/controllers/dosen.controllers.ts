@@ -98,7 +98,8 @@ class DosenController {
 	}
 
 	public static async postSetoran(req: Request, res: Response) {
-		const { nim, email_dosen_pa, nomor_surah, tgl_setoran } = req.body;
+		const { nim, nomor_surah, tgl_setoran } = req.body;
+		const email_dosen_pa = (req as RequestPayloadProps).email;
 
 		// Convert nomor_surah to integer if it is a string, and returns err if not
 		const nomorSurahInt = parseInt(nomor_surah as string, 10);
@@ -110,7 +111,7 @@ class DosenController {
 		}
 
 		// Validasi input
-		if (DosenHelper.validatePostSetoran(nim, email_dosen_pa, nomorSurahInt)) {
+		if (DosenHelper.validatePostSetoran(nim, nomorSurahInt)) {
 			return res.status(400).json({
 				response: false,
 				message: "Waduh, lengkapi dulu datanya mas! 😡",
@@ -119,20 +120,6 @@ class DosenController {
 
 		await prisma.$transaction(async () => {
 			try {
-				// Periksa apakah kombinasi nim, nip, dan nomor_surah sudah ada (antisipasi duplikasi setoran di 1 mhs)
-				const existingSetoran = await DosenService.checkExistingSetoran(
-					nim as string,
-					email_dosen_pa as string,
-					nomorSurahInt
-				);
-				if (existingSetoran) {
-					return res.status(400).json({
-						response: false,
-						message:
-							"Maaf, mahasiswa yang bersangkutan telah menyetor surah tersebut! 😫",
-					});
-				}
-
 				// Simpan data ke database
 				await DosenService.postSetoran(
 					nim as string,
@@ -150,7 +137,7 @@ class DosenController {
 				if ((error as any).code === "P2010") {
 					return res.status(400).json({
 						response: false,
-						message: "Maaf, sepertinya ada data yang belum ada di database! 😅",
+						message: "Maaf, terjadi kesalahan. Bisa jadi mahasiswa yang bersangkutan sudah menyetor surah tersebut, atau data yang Anda masukkan tidak ditemukan di database. Mohon periksa kembali! 😅",
 					});
 				}
 				console.error(`[ERROR] ${error}`);
