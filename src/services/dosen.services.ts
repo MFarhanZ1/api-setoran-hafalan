@@ -23,7 +23,7 @@ class DosenService {
 			FROM 
 				mahasiswa 
 			WHERE 
-				nip=(SELECT nip FROM dosen WHERE email = ${email})
+				id_dosen_pa=(SELECT id FROM dosen WHERE email = ${email})
 			GROUP BY 
 				substring(nim FROM 2 FOR 2) 
 			ORDER BY 
@@ -84,27 +84,12 @@ class DosenService {
 		LEFT JOIN 
 			setoran ON setoran.nim = mahasiswa.nim
 		WHERE 
-			mahasiswa.nip = (SELECT nip FROM dosen WHERE email = ${email})
+			mahasiswa.id_dosen_pa = (SELECT id FROM dosen WHERE email = ${email})
 		GROUP BY 
 			mahasiswa.email, mahasiswa.nim, mahasiswa.nama
 		ORDER BY 
 			mahasiswa.nama;
 		`;
-	}
-
-	public static async checkExistingSetoran(
-		nim: string,
-		email_dosen_pa: string,
-		nomorSurahInt: number
-	) {
-		const result = await prisma.$queryRaw`
-			SELECT * FROM "setoran" 
-			WHERE "nim" = ${nim} 
-				AND "nip" = (SELECT "nip" FROM "dosen" WHERE "email" = ${email_dosen_pa}) 
-				AND "nomor_surah" = ${nomorSurahInt} 
-			LIMIT 1
-		`;
-		return !((result as any).length == 0);
 	}
 
 	public static async postSetoran(
