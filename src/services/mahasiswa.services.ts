@@ -29,7 +29,7 @@ class MahasiswaService {
             mahasiswa mhs,
             dosen
         WHERE
-            mhs.nip = dosen.nip
+            mhs.id_dosen_pa = dosen.id
             AND mhs.email = ${email};
         `;
 		return (result as any)[0];
