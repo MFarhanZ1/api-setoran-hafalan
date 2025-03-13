@@ -13,7 +13,7 @@ app.get('', (req, res) => {
   return res.status(200).json({
     'response': true,
     'message': 'Cihuy, Halow Semua 👋 ~ Selamat datang di API Setoran Hafalan! 🎉',
-    'version': 'v1.2.7-alpha',
+    'version': 'v2.1.4-alpha',
     'contributor': 'https://github.com/riaudevops/api-setoran-hafalan/graphs/contributors',
     'timezone': 'Asia/Jakarta ~ ' + new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })
   })
