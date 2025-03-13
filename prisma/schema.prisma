@@ -20,7 +20,7 @@ model mahasiswa {
   nama    String    @db.VarChar(255)
   email   String    @unique @db.VarChar(255)
   nip     String    @db.VarChar(18)
-  dosen   dosen     @relation(fields: [nip], references: [nip], onDelete: NoAction, onUpdate: NoAction)
+  dosen   dosen     @relation(fields: [nip], references: [nip], onDelete: NoAction, onUpdate: Cascade)
   setoran setoran[]
 }
 
@@ -32,7 +32,7 @@ model setoran {
   nip          String    @db.VarChar(18)
   nomor_surah  Int
   mahasiswa    mahasiswa @relation(fields: [nim], references: [nim], onDelete: NoAction, onUpdate: NoAction, map: "fk_nim_setoran")
-  dosen        dosen     @relation(fields: [nip], references: [nip], onDelete: NoAction, onUpdate: NoAction)
+  dosen        dosen     @relation(fields: [nip], references: [nip], onDelete: NoAction, onUpdate: Cascade)
   surah        surah     @relation(fields: [nomor_surah], references: [nomor], onDelete: NoAction, onUpdate: NoAction, map: "fk_nomor_surah_setoran")
 
   @@unique([nim, nomor_surah])
