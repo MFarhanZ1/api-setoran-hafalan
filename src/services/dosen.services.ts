@@ -22,7 +22,7 @@ class DosenService {
 			FROM 
 				mahasiswa 
 			WHERE 
-				id_dosen_pa=(SELECT id FROM dosen WHERE email = ${email})
+				nip=(SELECT nip FROM dosen WHERE email = ${email})
 			GROUP BY 
 				substring(nim FROM 2 FOR 2) 
 			ORDER BY 
@@ -83,7 +83,7 @@ class DosenService {
 		LEFT JOIN 
 			setoran ON setoran.nim = mahasiswa.nim
 		WHERE 
-			mahasiswa.id_dosen_pa = (SELECT id FROM dosen WHERE email = ${email})
+			mahasiswa.nip = (SELECT nip FROM dosen WHERE email = ${email})
 		GROUP BY 
 			mahasiswa.email, mahasiswa.nim, mahasiswa.nama
 		ORDER BY 
@@ -101,11 +101,11 @@ class DosenService {
 
 		return await prisma.$queryRaw`
 			INSERT INTO 
-				"setoran" ("tgl_setoran", "nim", "id_dosen_pa", "nomor_surah") 
+				"setoran" ("tgl_setoran", "nim", "nip", "nomor_surah") 
 			VALUES (
 				${tglSetoran}, 
 				${nim}, 
-				(SELECT id FROM dosen WHERE email=${email_dosen_pa}), 
+				(SELECT nip FROM dosen WHERE email=${email_dosen_pa}), 
 				${nomor_surah}
 			);
 		`;
